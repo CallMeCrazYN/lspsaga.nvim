@@ -91,7 +91,10 @@ local function lb_autocmd()
   api.nvim_create_autocmd('LspAttach', {
     group = g,
     callback = function(opt)
-      local client = lsp.get_client_by_id(opt.data.client_id)
+      local client = nil
+      if opt.data then
+        client = lsp.get_client_by_id(opt.data.client_id)
+      end
       if not client then
         return
       end
