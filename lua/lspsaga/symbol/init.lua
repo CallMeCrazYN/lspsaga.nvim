@@ -195,12 +195,15 @@ function symbol:register_module()
       if self[args.buf] then
         return
       end
-
-      local client = lsp.get_client_by_id(args.data.client_id)
-      if not client or not client.supports_method('textDocument/documentSymbol') then
+      if args.client then
+        local client = lsp.get_client_by_id(args.data.client_id)
+        if not client or not client.supports_method('textDocument/documentSymbol') then
+          return
+        end
+        self:do_request(args.buf, args.data.client_id)
+      else
         return
       end
-      self:do_request(args.buf, args.data.client_id)
 
       if config.symbol_in_winbar.enable then
         require('lspsaga.symbol.winbar').init_winbar(args.buf)
